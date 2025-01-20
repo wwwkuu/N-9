@@ -1,36 +1,84 @@
 #include <iostream>
-#include <cmath>
+#include <string>
 using namespace std;
-void vvod(long long int& M, long long int& N) {
-    while (true){                       //ввод чисел
-        cin>>M>>N;
-        if (M > pow(10,11) and N > pow(10,11)) {
-            break;
+
+// Функция для сравнения двух строк, представляющих числа
+int compare(const string& a, const string& b) {
+  if (a.size() > b.size()) return 1;
+  if (a.size() < b.size()) return -1;
+  return a.compare(b);
+}
+
+// Функция для вычитания двух строк, представляющих числа (предполагается, что a >= b)
+string subtract(string a, const string& b) {
+    string result = "";
+    int carry = 0;
+    int i = a.size() - 1, j = b.size() - 1;
+
+    while(i >= 0 || j >= 0 || carry)
+    {
+        int digitA = (i >= 0) ? (a[i] - '0') : 0;
+        int digitB = (j >= 0) ? (b[j] - '0') : 0;
+        int sub = digitA - digitB - carry;
+        if(sub < 0)
+        {
+           sub += 10;
+           carry = 1;
         }
-        else cout<<"Ошибка ввода! Введите числа m и n больше 10¹¹: ";
+        else carry = 0;
+        result = to_string(sub) + result;
+        --i;
+        --j;
     }
+    // Стирание нулей
+    while (result.size() > 1 && result[0] == '0') {
+        result.erase(0,1);
+    }
+
+    return result;
 }
 
-void NOD(long long int& M, long long int& N) {
-    while (M != 0 and N != 0) {       //нахождение НОД
-        if (M > N)
-            M %= N;
-        else
-            N %= M;
-        }   
+// Функция для вычисления остатка от деления a на b
+string modulo(string a, const string& b) {
+  if (compare(a, b) < 0) return a;
+  if (a == b) return "0";
+  string temp = a;
+
+  while(compare(temp, b) >=0 )
+  {
+    string temp_b = b;
+    int diff = temp.size() - temp_b.size();
+    if(diff > 0)
+    {
+      temp_b.insert(temp_b.begin(),diff,'0');
+    }
+    if(compare(temp, temp_b) < 0)
+    {
+       temp_b.erase(0,1);
+    }
+    temp = subtract(temp, temp_b);
+  }
+  return temp;
 }
 
+// Функция для вычисления НОД двух больших чисел, представленных строками
+string NOD(string a, string b) {
+  while (b != "0") {
+    string temp = modulo(a, b);
+    a = b;
+    b = temp;
+  }
+  return a;
+}
 
-int main()
-{
+int main() {
     setlocale(LC_ALL, "Russian");
-    long long int m,n,m1,n1;
-    cout<<"Введите m и n: ";
-    vvod(m,n);
-    m1=m;
-    n1=n;
-    NOD(m1,n1);
-    if (n1 + m1 == 1) cout<<"Числа "<<m<<" и "<<n<<" являются взаимно простыми\nНОД = "<<(n1+m1);
-    else cout<<"Числа "<<m<<" и "<<n<<" не являются взаимно простыми\nНОД = "<<(n1+m1);
+    string num1, num2;
+    cout << "Введите два целых числа, разделенных пробелом: ";
+    cin >> num1 >> num2;
+    string result = NOD(num1, num2);
+    if (result=="1") cout<<"Числа являются взаимно простыми\n";
+    else cout<<"Числа не являются взаимно простыми\n";
+    cout << "НОД(" << num1 << ", " << num2 << ") = " << result;
     return 0;
 }
