@@ -74,8 +74,26 @@ string NOD(string a, string b) {
 int main() {
     setlocale(LC_ALL, "Russian");
     string num1, num2;
-    cout << "Введите два целых числа, разделенных пробелом: ";
-    cin >> num1 >> num2;
+    bool flag = true;
+    while (flag) {
+        cout << "Введите два целых числа не менее 10¹¹, разделенных пробелом: ";
+        cin >> num1 >> num2;
+        flag = false;
+        if (num1.size()<11 or num2.size()<11) flag = true;
+        for (int i = 0; i<num1.size();i++) {
+            if (isdigit(num1[i])==0) {
+                flag = true;
+                break;
+            }
+        }
+        for (int i = 0; i<num2.size();i++) {
+            if (isdigit(num2[i])==0) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) cout<<"Неверный ввод!\n";
+    }
     string result = NOD(num1, num2);
     if (result=="1") cout<<"Числа являются взаимно простыми\n";
     else cout<<"Числа не являются взаимно простыми\n";
