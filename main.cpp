@@ -76,7 +76,7 @@ int main() {
     string num1, num2;
     bool flag = true;
     while (flag) {
-        cout << "Введите два целых числа не менее 10¹¹, разделенных пробелом: ";
+        cout << "Введите два целых числа не менее 10¹¹: ";
         cin >> num1 >> num2;
         flag = false;
         if (num1.size()<11 or num2.size()<11) flag = true;
@@ -92,6 +92,9 @@ int main() {
                 break;
             }
         }
+        while (num1[0]=='0') num1.erase(0,1);
+        while (num2[0]=='0') num2.erase(0,1);
+        if (num1.size()<11 or num2.size()<11) flag = true;
         if (flag) cout<<"Неверный ввод!\n";
     }
     string result = NOD(num1, num2);
